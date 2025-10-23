@@ -28,7 +28,7 @@ int main(int argc, const char *argv[])
 	}
 
 	std::cout.precision(20);
-	toC::Graph toCgraph(onnx_model);
+	toC::Graph toCgraph(onnx_model, {}, options.target);
 	if( options.opt_fold_casts )
 		toCgraph.fold_casts();
 	if( options.opt_unionize )

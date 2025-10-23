@@ -14,7 +14,8 @@ class Graph {
 public:
 	Graph(
 		onnx::ModelProto &onnx_model,
-		std::vector<Tensor*> inputs={}
+		std::vector<Tensor*> inputs={},
+		std::string hw_target=""
 	);
 
 	/* print the entire .h and .cc file contents */
@@ -60,6 +61,7 @@ public:
 private:
 	// The top-level onnx object.
 	onnx::ModelProto &model;
+	std::string hardware_target;
 
 	// The tensors of the network. Pointers are added to this
 	// vector as walking the graph resolves node outputs.

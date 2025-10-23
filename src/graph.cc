@@ -16,9 +16,10 @@ int Graph::anonymous_nodes=0;
 
 Graph::Graph(
 	onnx::ModelProto &onnx_model,
-	std::vector<Tensor*> ext_inputs
+	std::vector<Tensor*> ext_inputs,
+	std::string hw_target
 	)
-	:model(onnx_model)
+	:model(onnx_model), hardware_target(hw_target)
 {
 
 	processGraph(onnx_model, ext_inputs);
@@ -453,6 +454,9 @@ int64_t Graph::onnx_ir_version(void)
 #include "nodes/upsample.h"
 #include "nodes/where.h"
 
+// including myTarget nodes
+#include "myTarget/conv.h"
+
 // Create a new onnx2c Node from an operand name of an ONNX Graph node.
 // NB: the onnx2c-special graph input and graph output nodes are not created here
 Node* Graph::createNode(const onnx::NodeProto &onnx_node)
@@ -494,7 +498,13 @@ Node* Graph::createNode(const onnx::NodeProto &onnx_node)
 	if( opName == "Concat" )return new Concat;
 	if( opName == "Constant" )return new Constant;
 	if( opName == "ConstantOfShape" )return new ConstantOfShape;
-	if( opName == "Conv" )return new Conv;
+	if( opName == "Conv" ){
+		if ( hardware_target == "rvacc" ) {
+			LOG(TRACE) << "Using target specific Conv_rvacc" << std::endl;	
+			return new Conv_rvacc;
+		}
+		return new Conv;
+	}
 	if( opName == "Cos" )return new Elementwise("Cos");
 	if( opName == "Cosh" )return new Elementwise("Cosh");
 	if( opName == "ConvInteger" )return new ConvInteger;

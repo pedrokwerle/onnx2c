@@ -7,6 +7,7 @@
 #include "timestamp.h"
 
 #include <iostream>
+#include <set>
 
 struct onnx2c_opts options;
 
@@ -124,6 +125,7 @@ void parse_cmdline_options(int argc, const char *argv[])
 	args::Flag quantize(parser, "quantize", "Quantize network (EXPERIMENTAL!)", {'q', "quantize"});
 	args::Flag version(parser, "version", "Print onnx2c version", {'v', "version"});
 	args::Positional<std::string> input(parser, "input", "ONNX file to process");
+	args::ValueFlag<std::string> target(parser, "target", "Target platform", {'t', "target"});
 	try
 	{
 		parser.ParseCLI(argc, argv);
@@ -161,6 +163,16 @@ void parse_cmdline_options(int argc, const char *argv[])
 		}
 	}
 	if (optimizations) { store_optimization_passes( args::get(optimizations) ); }
+	if (target) { 
+		options.target = args::get(target); 
+		static const std::set<std::string> valid_targets = {"rvacc", "generic"};
+    	if (!valid_targets.count(options.target)) {
+        std::cerr << "Error: unrecognized target '" << options.target
+                  << "'. Supported targets are: rvacc, generic.";
+		hint_at_help_and_exit(); 
+    	}
+		if ( options.target == "generic") { options.target = ""; };
+	}
 	if (input) { options.input_file = args::get(input); }
 	if (options.input_file == "" ) { std::cerr << "No input file given"; hint_at_help_and_exit(); }
 }
