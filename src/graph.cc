@@ -452,12 +452,6 @@ Node* Graph::createNode(const onnx::NodeProto& onnx_node)
 
 
 	// Modify nodes for hardware-specific implementations
-	if ( hardware_target == "rvacc") {
-		LOG(TRACE) << "Using target specific Conv_rvacc" << std::endl;
-		if( opName == "Conv" )
-			opName = "Conv_rvacc";
-	}
-
 	LOG(TRACE) << "     hardware target: " << hardware_target << std::endl;
 	if ( hardware_target == "sauria") {
 		LOG(TRACE) << "Using target specific Conv_sauria" << std::endl;
@@ -485,7 +479,6 @@ Node* Graph::createNode(const onnx::NodeProto& onnx_node)
 	if (opName == "Constant") return new Constant;
 	if (opName == "ConstantOfShape") return new ConstantOfShape;
 	if (opName == "Conv") return new Conv;
-	if( opName == "Conv_rvacc" )return new Conv_rvacc;
 	if( opName == "Conv_sauria" )return new Conv_sauria;
 	if (opName == "Cos") return new Elementwise("Cos");
 	if (opName == "Cosh") return new Elementwise("Cosh");
