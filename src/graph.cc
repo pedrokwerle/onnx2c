@@ -437,9 +437,6 @@ int64_t Graph::onnx_ir_version(void)
 #include "nodes/upsample.h"
 #include "nodes/where.h"
 
-// including myTarget nodes
-#include "myTarget/conv.h"
-
 // include sauria nodes
 #include "sauria/conv.h"
 
