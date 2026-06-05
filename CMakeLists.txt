@@ -27,6 +27,7 @@ add_custom_command(
 
 
 add_library(onnx2c_lib STATIC
+	src/sauria_manifest.cc
 	src/graph.cc
 	src/graph_print.cc
 	src/node.cc
